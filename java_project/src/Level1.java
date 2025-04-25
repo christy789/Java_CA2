@@ -1,5 +1,3 @@
-package com.java_projects;
-
 class Level1 {
     private final double pYes = 0.545;
     private final double pNo = 0.455;

@@ -1,5 +1,3 @@
-package com.java_projects;
-
 class Project_Control {
     private final Level1 classifier;
 

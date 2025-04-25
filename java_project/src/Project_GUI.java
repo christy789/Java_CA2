@@ -1,4 +1,3 @@
-package com.java_projects;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -7,7 +6,7 @@ public class Project_GUI {
     public static void main(String[] args) {
         JFrame frame = new JFrame("Account Overdrawn Predictor");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 300);
+        frame.setSize(600, 300);
         frame.setLayout(new GridLayout(6, 2));
 
         String[] options1 = {"business", "personal"};
