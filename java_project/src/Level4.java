@@ -2,10 +2,16 @@ import java.io.*;
 import java.util.*;
 
 public class Level4 {
+    // Stores conditional probabilities: P(feature=value | label)
     private Map<String, Map<String, Map<String, Double>>> conditionalProbs = new HashMap<>();
+
+    // Stores prior probabilities: P(label)
     private Map<String, Double> priorProbs = new HashMap<>();
+
+    // Flag to check if the model has been trained
     private boolean trained = false;
 
+    // Train the classifier using a given list of data and headers
     public void trainFromData(List<String[]> data, String[] headers) {
         Map<String, Integer> labelCounts = new HashMap<>();
         Map<String, Map<String, Map<String, Integer>>> counts = new HashMap<>();
@@ -15,6 +21,7 @@ public class Level4 {
             String label = row[4];
             labelCounts.put(label, labelCounts.getOrDefault(label, 0) + 1);
 
+            // Count how often each feature value appears for each label
             for (int i = 0; i < 4; i++) {
                 String feature = headers[i];
                 String value = row[i];
@@ -26,6 +33,7 @@ public class Level4 {
             }
         }
 
+        // Calculate prior probabilities for each label
         int total = data.size();
         priorProbs.clear();
         conditionalProbs.clear();
@@ -34,6 +42,7 @@ public class Level4 {
             priorProbs.put(label, labelCounts.get(label) / (double) total);
         }
 
+        // Calculate conditional probabilities for each feature value given a label
         for (String feature : counts.keySet()) {
             conditionalProbs.putIfAbsent(feature, new HashMap<>());
             for (String label : counts.get(feature).keySet()) {
@@ -49,6 +58,7 @@ public class Level4 {
         trained = true;
     }
 
+    // Load data from a CSV file and train the classifier
     public void train(String filePath) throws Exception {
         List<String[]> data = new ArrayList<>();
         Scanner scanner = new Scanner(new File(filePath));
@@ -63,6 +73,7 @@ public class Level4 {
         trainFromData(data, headers);
     }
 
+    // Predict if an account will be overdrawn based on feature values
     public String predict(String accountType, String hasCreditCard, String hasLoan, String employmentStatus) {
         if (!trained) return "Not trained yet";
 
@@ -70,6 +81,7 @@ public class Level4 {
         double bestProb = -1;
         String bestLabel = "";
 
+        // Calculate the probability for each label and pick the one with the highest probability
         for (String label : labels) {
             double prob = priorProbs.getOrDefault(label, 1e-6) *
                     getProb("AccountType", accountType, label) *
@@ -86,6 +98,7 @@ public class Level4 {
         return bestLabel.equals("yes") ? "Yes" : "No";
     }
 
+    // Helper method to get conditional probability safely
     private double getProb(String feature, String value, String label) {
         return conditionalProbs.getOrDefault(feature, new HashMap<>())
                 .getOrDefault(label, new HashMap<>())
