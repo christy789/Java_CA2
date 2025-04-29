@@ -1,13 +1,11 @@
 class Project_Control {
-    private final Level1 classifier;
+    private final level2 classifier = new level2();
 
-    public Project_Control() {
-        this.classifier = new Level1();
+    public void train() throws Exception {
+        classifier.train("C:\\Users\\chris\\OneDrive\\Desktop\\Uni work\\oop_java\\predictive_dataset.csv");
     }
 
     public String predict(String accountType, String hasCreditCard, String hasLoan, String employmentStatus) {
-        double prediction = classifier.predict(accountType, hasCreditCard, hasLoan, employmentStatus);
-        return prediction == 1.0 ? "Yes" : "No";
+        return classifier.predict(accountType, hasCreditCard, hasLoan, employmentStatus);
     }
 }
-
