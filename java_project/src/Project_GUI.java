@@ -1,14 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class Project_GUI {
     public static void main(String[] args) {
         JFrame frame = new JFrame("Account Overdrawn Predictor");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(500, 350);
-        frame.setLayout(new GridLayout(7, 2));
+        frame.setSize(650, 400);
+        frame.setLayout(new GridLayout(8, 2));
 
         String[] options1 = {"business", "personal"};
         String[] options2 = {"yes", "no"};
@@ -18,9 +16,11 @@ public class Project_GUI {
         JComboBox<String> creditCardBox = new JComboBox<>(options2);
         JComboBox<String> loanBox = new JComboBox<>(options2);
         JComboBox<String> employmentBox = new JComboBox<>(options3);
+        JComboBox<String> labelBox = new JComboBox<>(options2);
 
         JButton trainButton = new JButton("Train");
         JButton predictButton = new JButton("Predict");
+        JButton addRowButton = new JButton("Add Row");
         JLabel resultLabel = new JLabel("Prediction will appear here");
 
         Project_Control controller = new Project_Control();
@@ -34,16 +34,28 @@ public class Project_GUI {
             }
         });
 
-        predictButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String accountType = (String) accountTypeBox.getSelectedItem();
-                String creditCard = (String) creditCardBox.getSelectedItem();
-                String loan = (String) loanBox.getSelectedItem();
-                String employment = (String) employmentBox.getSelectedItem();
+        predictButton.addActionListener(e -> {
+            String accountType = (String) accountTypeBox.getSelectedItem();
+            String creditCard = (String) creditCardBox.getSelectedItem();
+            String loan = (String) loanBox.getSelectedItem();
+            String employment = (String) employmentBox.getSelectedItem();
 
-                String prediction = controller.predict(accountType, creditCard, loan, employment);
-                resultLabel.setText("Prediction: Account will be overdrawn = " + prediction);
+            String prediction = controller.predict(accountType, creditCard, loan, employment);
+            resultLabel.setText("Prediction: Account will be overdrawn = " + prediction);
+        });
+
+        addRowButton.addActionListener(e -> {
+            String accountType = (String) accountTypeBox.getSelectedItem();
+            String creditCard = (String) creditCardBox.getSelectedItem();
+            String loan = (String) loanBox.getSelectedItem();
+            String employment = (String) employmentBox.getSelectedItem();
+            String label = (String) labelBox.getSelectedItem();
+
+            try {
+                controller.addRow(accountType, creditCard, loan, employment, label);
+                JOptionPane.showMessageDialog(frame, "Row added successfully! Please click 'Train' again.");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(frame, "Error adding row: " + ex.getMessage());
             }
         });
 
@@ -55,8 +67,11 @@ public class Project_GUI {
         frame.add(loanBox);
         frame.add(new JLabel("Employment Status:"));
         frame.add(employmentBox);
+        frame.add(new JLabel("Known Label (yes/no):"));
+        frame.add(labelBox);
         frame.add(trainButton);
         frame.add(predictButton);
+        frame.add(addRowButton);
         frame.add(resultLabel);
 
         frame.setVisible(true);
